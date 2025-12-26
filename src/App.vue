@@ -1,9 +1,9 @@
-<script setup></script>
+<script setup>
+import Button from "./components/Button.vue";
+</script>
 
 <template>
-  <header>Лого</header>
-  <main>{{ Date() }}</main>
-  <footer></footer>
+  <main><Button>Начать игру</Button></main>
 </template>
 
 <style scoped></style>
