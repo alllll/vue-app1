@@ -2,15 +2,15 @@
   <div class="card">
     <div class="card-inner">
       <div class="card-content">
-        {{ isTurned ? translate : text }}
+        {{ state === "opened" ? translation : word }}
       </div>
     </div>
     <div class="card-number">
       {{ number }}
     </div>
-    <div v-if="status != undefined" class="status-icon">
+    <div v-if="status != 'pending'" class="status-icon">
       <svg
-        v-if="status === false"
+        v-if="status === 'fail'"
         width="24"
         height="24"
         viewBox="0 0 24 24"
@@ -26,7 +26,7 @@
         />
       </svg>
       <svg
-        v-if="status === true"
+        v-if="status === 'success'"
         width="24"
         height="24"
         viewBox="0 0 24 24"
@@ -42,11 +42,14 @@
         />
       </svg>
     </div>
-    <button v-if="!isTurned" class="card-action" @click="turnOver">
+    <button v-if="state === 'closed'" class="card-action" @click="turnOver">
       ПЕРЕВЕРНУТЬ
     </button>
-    <div v-if="isTurned && status === undefined" class="card-turn-btn">
-      <div @click="changeStatus(false)">
+    <div
+      v-if="state === 'opened' && status === 'pending'"
+      class="card-turn-btn"
+    >
+      <div @click="changeStatus('fail')">
         <svg
           width="24"
           height="24"
@@ -62,7 +65,7 @@
           />
         </svg>
       </div>
-      <div @click="changeStatus(true)">
+      <div @click="changeStatus('success')">
         <svg
           width="24"
           height="24"
@@ -79,7 +82,7 @@
         </svg>
       </div>
     </div>
-    <div v-else-if="isTurned" class="complete">ЗАВЕРШЕНО</div>
+    <div v-else-if="state === 'opened'" class="complete">ЗАВЕРШЕНО</div>
   </div>
 </template>
 
@@ -91,11 +94,11 @@ defineProps({
     type: [String, Number],
     required: true,
   },
-  text: {
+  word: {
     type: String,
     required: true,
   },
-  translate: {
+  translation: {
     type: String,
     required: true,
   },
@@ -103,13 +106,18 @@ defineProps({
 
 const emit = defineEmits(["changeStatus", "turn"]);
 
-const isTurned = ref(false);
+const state = ref("closed");
 
-const status = ref();
+const status = ref("pending");
 
 const turnOver = () => {
-  isTurned.value = !isTurned.value;
-  emit("turn", isTurned.value);
+  if (state.value === "closed") {
+    state.value = "opened";
+  } else {
+    state.value = "closed";
+  }
+
+  emit("turn", state.value);
 };
 
 const changeStatus = (value) => {

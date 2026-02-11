@@ -10,7 +10,7 @@ import Score from "./components/Score.vue";
     <Score />
   </header>
   <main class="main">
-    <Card number="01" text="unadmitted" translate="не допущенный" />
+    <Card number="01" word="unadmitted" translation="не допущенный" />
 
     <Button>Начать игру</Button>
   </main>
