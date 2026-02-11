@@ -1,16 +1,41 @@
 <script setup>
+import { computed, reactive } from "vue";
 import Button from "./components/Button.vue";
 import Card from "./components/Card.vue";
 import Score from "./components/Score.vue";
+
+const cards = reactive([
+  {
+    number: 1,
+    word: "unadmitted",
+    translation: "не допущенный",
+    status: "pending",
+  },
+]);
+
+const balance = computed(() => {
+  return cards.filter((item) => item.status === "success").length;
+});
 </script>
 
 <template>
   <header class="header">
     <div class="header-title">ЗАПОМНИ СЛОВО</div>
-    <Score />
+    <Score :count="balance" />
   </header>
   <main class="main">
-    <Card number="01" word="unadmitted" translation="не допущенный" />
+    <Card
+      v-for="(card, index) in cards"
+      :key="card.number"
+      :number="card.number"
+      :word="card.word"
+      :translation="card.translation"
+      @change-status="
+        (status) => {
+          cards[index].status = status;
+        }
+      "
+    />
 
     <Button>Начать игру</Button>
   </main>
