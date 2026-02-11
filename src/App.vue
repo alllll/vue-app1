@@ -6,7 +6,21 @@ import Score from "./components/Score.vue";
 
 const cards = reactive([
   {
-    number: 1,
+    word: "unadmitted",
+    translation: "не допущенный",
+    status: "pending",
+  },
+  {
+    word: "unadmitted",
+    translation: "не допущенный",
+    status: "pending",
+  },
+  {
+    word: "unadmitted",
+    translation: "не допущенный",
+    status: "pending",
+  },
+  {
     word: "unadmitted",
     translation: "не допущенный",
     status: "pending",
@@ -26,7 +40,7 @@ const balance = computed(() => {
   <main class="main">
     <Card
       v-for="(card, index) in cards"
-      :key="card.number"
+      :key="index"
       :number="card.number"
       :word="card.word"
       :translation="card.translation"
