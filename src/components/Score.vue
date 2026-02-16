@@ -1,0 +1,44 @@
+<script setup>
+const props = defineProps({
+  count: {
+    type: String,
+    default: "0",
+  },
+});
+</script>
+
+<template>
+  <span class="score">
+    {{ props.count }}
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15.4709 4.0535C14.1978 4.22856 12.9226 4.8312 12 5.80891C11.0774 4.8312 9.8022 4.22856 8.52915 4.0535C6.91335 3.83131 5.1499 4.28425 4.05884 5.73088C2.64706 7.60276 2.64705 10.254 4.05884 12.1258L8.75286 18.3496C10.4125 20.5501 13.5875 20.5501 15.2471 18.3496L19.9412 12.1258C21.3529 10.254 21.3529 7.60276 19.9412 5.73088C18.8501 4.28425 17.0867 3.83131 15.4709 4.0535Z"
+        fill="#008BFE"
+      />
+    </svg>
+  </span>
+</template>
+
+<style scoped>
+.score {
+  border-radius: 36px;
+  padding: 12px 24px;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);
+  background: #cce8ff;
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 150%;
+  text-align: center;
+  color: #008bfe;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+</style>
