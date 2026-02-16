@@ -1,7 +1,6 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from "vue";
 
-import Button from "./components/Button.vue";
 import Card from "./components/Card.vue";
 import Score from "./components/Score.vue";
 import Spinner from "./components/Spinner.vue";
@@ -54,8 +53,6 @@ const balance = computed(() => {
           }
         "
       />
-
-      <Button>Начать игру</Button>
     </template>
   </main>
 </template>
@@ -68,7 +65,7 @@ const balance = computed(() => {
 }
 .main {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 16px;
   justify-content: center;
   align-items: start;
