@@ -1,31 +1,25 @@
 <script setup>
-import { computed, reactive } from "vue";
+import { computed, onMounted, reactive } from "vue";
 import Button from "./components/Button.vue";
 import Card from "./components/Card.vue";
 import Score from "./components/Score.vue";
 
-const cards = reactive([
-  {
-    word: "unadmitted",
-    translation: "не допущенный",
-    status: "pending",
-  },
-  {
-    word: "unadmitted",
-    translation: "не допущенный",
-    status: "pending",
-  },
-  {
-    word: "unadmitted",
-    translation: "не допущенный",
-    status: "pending",
-  },
-  {
-    word: "unadmitted",
-    translation: "не допущенный",
-    status: "pending",
-  },
-]);
+const cards = reactive([]);
+
+/* eslint-disable-next-line no-undef */
+onMounted(async () => {
+  try {
+    const res = await fetch("http://localhost:8080/api/random-words");
+    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+    const data = await res.json();
+    // ensure each card has status
+    cards.push(
+      ...data.map((c, i) => ({ ...c, status: "pending", number: i + 1 })),
+    );
+  } catch (e) {
+    console.error("Failed to load words:", e);
+  }
+});
 
 const balance = computed(() => {
   return cards.filter((item) => item.status === "success").length;
@@ -62,12 +56,12 @@ const balance = computed(() => {
   align-items: center;
 }
 .main {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
   justify-content: center;
-  align-items: center;
+  align-items: start;
   min-height: 100vh;
-
   text-align: center;
 }
 
