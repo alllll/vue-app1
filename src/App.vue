@@ -1,45 +1,55 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 
+import Button from "./components/Button.vue";
 import Card from "./components/Card.vue";
 import Score from "./components/Score.vue";
 import Spinner from "./components/Spinner.vue";
 
-const isLoading = ref(true);
-
+const isLoading = ref(false);
 const cards = reactive([]);
 
-/* eslint-disable-next-line no-undef */
-onMounted(async () => {
+const startGame = async () => {
+  // Reset cards before fetching new ones
+  cards.splice(0);
   isLoading.value = true;
-
   try {
     const res = await fetch("http://localhost:8080/api/random-words");
     if (!res.ok) throw new Error(`HTTP error ${res.status}`);
     const data = await res.json();
-    // ensure each card has status
     cards.push(
       ...data.map((c, i) => ({ ...c, status: "pending", number: i + 1 })),
     );
     isLoading.value = false;
   } catch (e) {
     console.error("Failed to load words:", e);
+    isLoading.value = false;
   }
-});
+};
 
-const balance = computed(() => {
-  return cards.filter((item) => item.status === "success").length;
+const score = computed(() => {
+  return cards.reduce((acc, item) => {
+    if (item.status === "success") return acc + 10;
+    if (item.status === "fail") return acc - 4;
+    return acc;
+  }, 0);
 });
 </script>
 
 <template>
   <header class="header">
     <div class="header-title">ЗАПОМНИ СЛОВО</div>
-    <Score :count="balance" />
+    <Score :count="score" />
   </header>
   <main class="main">
     <Spinner v-if="isLoading" />
     <template v-else>
+      <div class="btn-wrapper">
+        <Button v-if="cards.length === 0" @click="startGame"
+          >Начать игру</Button
+        >
+      </div>
+
       <Card
         v-for="(card, index) in cards"
         :key="index"
@@ -53,6 +63,11 @@ const balance = computed(() => {
           }
         "
       />
+      <div class="btn-wrapper">
+        <Button v-if="cards.length > 0" @click="startGame"
+          >Начать заново</Button
+        >
+      </div>
     </template>
   </main>
 </template>
@@ -72,7 +87,12 @@ const balance = computed(() => {
   min-height: 100vh;
   text-align: center;
 }
-
+.btn-wrapper {
+  display: flex;
+  justify-content: center;
+  grid-column: 1 / -1;
+  margin-top: 16px;
+}
 .header-title {
   font-family: var(--font-family);
   font-weight: 700;
