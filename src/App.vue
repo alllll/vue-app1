@@ -1,13 +1,19 @@
 <script setup>
-import { computed, onMounted, reactive } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
+
 import Button from "./components/Button.vue";
 import Card from "./components/Card.vue";
 import Score from "./components/Score.vue";
+import Spinner from "./components/Spinner.vue";
+
+const isLoading = ref(true);
 
 const cards = reactive([]);
 
 /* eslint-disable-next-line no-undef */
 onMounted(async () => {
+  isLoading.value = true;
+
   try {
     const res = await fetch("http://localhost:8080/api/random-words");
     if (!res.ok) throw new Error(`HTTP error ${res.status}`);
@@ -16,6 +22,7 @@ onMounted(async () => {
     cards.push(
       ...data.map((c, i) => ({ ...c, status: "pending", number: i + 1 })),
     );
+    isLoading.value = false;
   } catch (e) {
     console.error("Failed to load words:", e);
   }
@@ -32,20 +39,24 @@ const balance = computed(() => {
     <Score :count="balance" />
   </header>
   <main class="main">
-    <Card
-      v-for="(card, index) in cards"
-      :key="index"
-      :number="card.number"
-      :word="card.word"
-      :translation="card.translation"
-      @change-status="
-        (status) => {
-          cards[index].status = status;
-        }
-      "
-    />
+    <Spinner v-if="isLoading" />
+    <template v-else>
+      <Card
+        v-for="(card, index) in cards"
+        :key="index"
+        :number="card.number"
+        :word="card.word"
+        :translation="card.translation"
+        :status="card.status"
+        @change-status="
+          (status) => {
+            cards[index].status = status;
+          }
+        "
+      />
 
-    <Button>Начать игру</Button>
+      <Button>Начать игру</Button>
+    </template>
   </main>
 </template>
 
@@ -57,7 +68,7 @@ const balance = computed(() => {
 }
 .main {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   justify-content: center;
   align-items: start;

@@ -102,13 +102,15 @@ defineProps({
     type: String,
     required: true,
   },
+  status: {
+    type: String,
+    required: true,
+  },
 });
 
 const emit = defineEmits(["changeStatus", "turn"]);
 
 const state = ref("closed");
-
-const status = ref("pending");
 
 const turnOver = () => {
   if (state.value === "closed") {
@@ -121,7 +123,7 @@ const turnOver = () => {
 };
 
 const changeStatus = (value) => {
-  status.value = value;
+  //  status.value = value;
   emit("changeStatus", value);
 };
 </script>
